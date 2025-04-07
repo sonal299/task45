@@ -1,46 +1,50 @@
-var express = require("express")
+var express = require("express");
+const empModel = require("./model/employee");
 require("./db")
-
-
-var app = express()
-var port =4000;
-var sModel = require('./model/student')
-
+var emp= require('./model/employee');
+var app = express();
 app.use(express.json())
-
+var port =2000;
+//post
 app.post('/',(req,res)=>{
     try {
-        sModel(req.body).save();
-        res.send("Data added")
+        emp(req.body).save();
+        res.send("data added")
     } catch (error) {
-        res.send(error)
+        res.send(error)  
     }
 })
-//api to read data from db
+//get
 app.get('/',async(req,res)=>{
     try {
-        var data =await sModel.find();
-        res.send(data)
+       var data= await empModel.find()
+       res.send(data)
+
     } catch (error) {
-        res.send(error)
+        console.log(data)
     }
 })
-
-// delete
+//delete
 app.delete('/:id',async(req,res)=>{
     try {
         console.log(req.params.id)
-        await sModel.findByIdAndDelete(req.params.id);
+        await empModel.findByIdAndDelete(req.params.id);
         res.send("Data deleted")
     } catch (error) {
         res.send(error)
         
     }
 })
-
-
-
+//put
+app.put('/:id',async(req,res)=>{
+    try {
+        await empModel.findByIdAndUpdate(req.params.id,req.body);
+        res.send("edited")
+    } catch (error) {
+        res.send(error)
+    }
+})
 
 app.listen(port,()=>{
-    console.log(`server connected and running on port ${port}`)
+    console.log(`server is up and running on port ${port}`)
 })
